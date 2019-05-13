@@ -50,7 +50,7 @@ class Linker {
      * The updated value is set at OS level, but System.getenv() calls may still return
      * the old values, as those are cached at JVM startup.
      *
-     * @param name Name of variable
+     * @param name  Name of variable
      * @param value Value of variable
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -75,17 +75,16 @@ class Linker {
      * Android 7.0 (API level 24) and up use linker namespaces, which prevent apps from loading
      * native libraries outside of that namespace.<br>
      *
-     * @see #getPatchedLdLibraryPath(boolean, String[])
-     *
      * @return If linker namespaces are used
+     * @see #getPatchedLdLibraryPath(boolean, String[])
      */
     @TargetApi(23)
     private static boolean haveLinkerNamespaces() {
         return (
                 (Build.VERSION.SDK_INT >= 24) ||
 
-                // 7.0 preview
-                ((Build.VERSION.SDK_INT == 23) && (Build.VERSION.PREVIEW_SDK_INT != 0))
+                        // 7.0 preview
+                        ((Build.VERSION.SDK_INT == 23) && (Build.VERSION.PREVIEW_SDK_INT != 0))
         );
     }
 
@@ -104,11 +103,10 @@ class Linker {
      * We also add a marker and include the original LD_LIBRARY_PATH, so it's value may be
      * restored after load. Otherwise, executing other binaries may fail.
      *
-     * @see #restoreOriginalLdLibraryPath()
-     *
-     * @param use64bit Use 64-bit paths
+     * @param use64bit   Use 64-bit paths
      * @param extraPaths Additional paths to include
      * @return Patched value for LD_LIBRARY_PATH
+     * @see #restoreOriginalLdLibraryPath()
      */
     static String getPatchedLdLibraryPath(boolean use64bit, String[] extraPaths) {
         String LD_LIBRARY_PATH = getenv("LD_LIBRARY_PATH");
@@ -190,9 +188,8 @@ class Linker {
     /**
      * Retrieve the pre-patched value of LD_LIBRARY_PATH.
      *
-     * @see #getPatchedLdLibraryPath(boolean, String[])
-     *
      * @return Original value of LD_LIBRARY_PATH
+     * @see #getPatchedLdLibraryPath(boolean, String[])
      */
     private static String getOriginalLdLibraryPath() {
         String LD_LIBRARY_PATH = System.getenv("LD_LIBRARY_PATH");

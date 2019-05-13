@@ -18,7 +18,9 @@ import java.lang.reflect.Method;
 class Reflection {
     private static final Object lock = new Object();
 
-    /** Cache for getSystemContext() */
+    /**
+     * Cache for getSystemContext()
+     */
     @SuppressLint("StaticFieldLeak")
     private static Context systemContext = null;
 
@@ -27,9 +29,8 @@ class Reflection {
      * <br>
      * Stability: unlikely to change, this implementation works from 1.6 through 9.0<br>
      *
-     * @see RootJava#getSystemContext()
-     *
      * @return system context
+     * @see RootJava#getSystemContext()
      */
     @SuppressLint("PrivateApi")
     static Context getSystemContext() {
@@ -55,7 +56,7 @@ class Reflection {
                 Object oActivityThread = mSystemMain.invoke(null);
                 Object oContext = mGetSystemContext.invoke(oActivityThread);
 
-                systemContext = (Context)oContext;
+                systemContext = (Context) oContext;
                 return systemContext;
             } catch (Exception e) {
                 Logger.ex(e);
@@ -64,7 +65,9 @@ class Reflection {
         }
     }
 
-    /** Cache for getActivityManager() */
+    /**
+     * Cache for getActivityManager()
+     */
     private static Object oActivityManager = null;
 
     /**
@@ -108,7 +111,9 @@ class Reflection {
         }
     }
 
-    /** Cache for getFlagReceiverFromShell() */
+    /**
+     * Cache for getFlagReceiverFromShell()
+     */
     private static Integer FLAG_RECEIVER_FROM_SHELL = null;
 
     /**
@@ -140,7 +145,9 @@ class Reflection {
         }
     }
 
-    /** Cache for getBroadcastIntent() */
+    /**
+     * Cache for getBroadcastIntent()
+     */
     private static Method mBroadcastIntent = null;
 
     /**
@@ -179,10 +186,9 @@ class Reflection {
      * <br>
      * This implementation does not require us to have a context
      *
+     * @param intent Intent to broadcast
      * @see RootJava#sendBroadcast(Intent)
      * @see RootIPC#broadcastIPC()
-     *
-     * @param intent Intent to broadcast
      */
     @SuppressLint("PrivateApi")
     static void sendBroadcast(Intent intent) {
@@ -216,16 +222,15 @@ class Reflection {
      * <br>
      * Stability: unlikely to change, this implementation works from 1.6 through 9.0<br>
      *
-     * @see Debugger#isEnabled()
-     *
      * @return Debugging enabled
+     * @see Debugger#isEnabled()
      */
     @SuppressLint("PrivateApi")
     static boolean isDebuggingEnabled() {
         try {
             Class<?> cVMDebug = Class.forName("dalvik.system.VMDebug");
             Method mIsDebuggingEnabled = cVMDebug.getDeclaredMethod("isDebuggingEnabled");
-            return (Boolean)mIsDebuggingEnabled.invoke(null);
+            return (Boolean) mIsDebuggingEnabled.invoke(null);
         } catch (Exception e) {
             Logger.ex(e);
             return false;
@@ -261,11 +266,10 @@ class Reflection {
          * Stability: stable, as changes to this pattern in AOSP would probably require all
          * AIDL-using apps to be recompiled.
          *
-         * @see RootIPCReceiver#getInterfaceFromBinder(IBinder)
-         *
-         * @param clazz Class of T
+         * @param clazz  Class of T
          * @param binder Binder proxy to retrieve interface from
          * @return T (proxy) instance or null
+         * @see RootIPCReceiver#getInterfaceFromBinder(IBinder)
          */
         T getInterfaceFromBinder(Class<T> clazz, IBinder binder) {
             // There does not appear to be a nice way to do this without reflection,
@@ -276,17 +280,17 @@ class Reflection {
                 Field fDescriptor = cStub.getDeclaredField("DESCRIPTOR");
                 fDescriptor.setAccessible(true);
 
-                String descriptor = (String)fDescriptor.get(binder);
+                String descriptor = (String) fDescriptor.get(binder);
                 IInterface intf = binder.queryLocalInterface(descriptor);
                 if (clazz.isInstance(intf)) {
                     // local
-                    return (T)intf;
+                    return (T) intf;
                 } else {
                     // remote
                     Class<?> cProxy = Class.forName(clazz.getName() + "$Stub$Proxy");
                     Constructor<?> ctorProxy = cProxy.getDeclaredConstructor(IBinder.class);
                     ctorProxy.setAccessible(true);
-                    return (T)ctorProxy.newInstance(binder);
+                    return (T) ctorProxy.newInstance(binder);
                 }
             } catch (Exception e) {
                 Logger.ex(e);

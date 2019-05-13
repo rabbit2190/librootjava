@@ -22,7 +22,7 @@ import java.util.Locale;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Logger {
-    private static String getDefaultLogTag(){
+    private static String getDefaultLogTag() {
         String tag = BuildConfig.APPLICATION_ID;
         int p;
         while ((p = tag.indexOf('.')) >= 0) {
@@ -34,15 +34,16 @@ public class Logger {
     private static String LOG_TAG = getDefaultLogTag();
 
     private static boolean log = false;
-    
+
     /**
      * Set LOG_TAG
+     *
      * @param logTag LOG_TAG to use
      */
     public static void setLogTag(String logTag) {
         LOG_TAG = logTag;
     }
-    
+
     /**
      * @return LOG_TAG
      */
@@ -61,7 +62,7 @@ public class Logger {
      * Log on debug level
      *
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void d(String message, Object... args) {
         if (log) {
@@ -75,9 +76,9 @@ public class Logger {
     /**
      * Log on debug level with prefix
      *
-     * @param prefix Prefix to prepend
+     * @param prefix  Prefix to prepend
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void dp(String prefix, String message, Object... args) {
         if (log) {
@@ -105,7 +106,7 @@ public class Logger {
      * Log on verbose level
      *
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void v(String message, Object... args) {
         android.util.Log.v(LOG_TAG, String.format(Locale.ENGLISH, message, args));
@@ -114,9 +115,9 @@ public class Logger {
     /**
      * Log on verbose level with prefix
      *
-     * @param prefix Prefix to prepend
+     * @param prefix  Prefix to prepend
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void vp(String prefix, String message, Object... args) {
         message = String.format(Locale.ENGLISH, message, args);
@@ -128,7 +129,7 @@ public class Logger {
      * Log on info level
      *
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void i(String message, Object... args) {
         android.util.Log.i(LOG_TAG, String.format(Locale.ENGLISH, message, args));
@@ -137,9 +138,9 @@ public class Logger {
     /**
      * Log on info level with prefix
      *
-     * @param prefix Prefix to prepend
+     * @param prefix  Prefix to prepend
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void ip(String prefix, String message, Object... args) {
         message = String.format(Locale.ENGLISH, message, args);
@@ -151,7 +152,7 @@ public class Logger {
      * Log on warning level
      *
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void w(String message, Object... args) {
         android.util.Log.w(LOG_TAG, String.format(Locale.ENGLISH, message, args));
@@ -160,9 +161,9 @@ public class Logger {
     /**
      * Log on warning level with prefix
      *
-     * @param prefix Prefix to prepend
+     * @param prefix  Prefix to prepend
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void wp(String prefix, String message, Object... args) {
         message = String.format(Locale.ENGLISH, message, args);
@@ -174,7 +175,7 @@ public class Logger {
      * Log on error level
      *
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void e(String message, Object... args) {
         android.util.Log.e(LOG_TAG, String.format(Locale.ENGLISH, message, args));
@@ -183,9 +184,9 @@ public class Logger {
     /**
      * Log on error level with prefix
      *
-     * @param prefix Prefix to prepend
+     * @param prefix  Prefix to prepend
      * @param message Message to format
-     * @param args Format arguments
+     * @param args    Format arguments
      */
     public static void ep(String prefix, String message, Object... args) {
         message = String.format(Locale.ENGLISH, message, args);

@@ -37,9 +37,8 @@ import java.lang.reflect.Type;
  * This class handles receiving the (wrapped) Binder interface, casting it to your own interface,
  * and handling connection state.
  *
- * @see RootIPC
- *
  * @param <T> Your IPC interface
+ * @see RootIPC
  */
 @SuppressWarnings({"unused", "WeakerAccess", "Convert2Diamond", "TryWithIdenticalCatches"})
 public abstract class RootIPCReceiver<T> {
@@ -165,10 +164,9 @@ public abstract class RootIPCReceiver<T> {
     /**
      * Convenience constructor that calls the proper constructor.
      *
-     * @see #RootIPCReceiver(Context, int, Class)
-     *
      * @param context Context to attach receiver to
-     * @param code User-value, should be unique per Binder
+     * @param code    User-value, should be unique per Binder
+     * @see #RootIPCReceiver(Context, int, Class)
      */
     public RootIPCReceiver(Context context, int code) {
         this(context, code, null);
@@ -204,8 +202,8 @@ public abstract class RootIPCReceiver<T> {
      * </pre>
      *
      * @param context Context to attach receiver to
-     * @param code User-value, should be unique per Binder
-     * @param clazz Class of the IPC interface, or null to attempt to determine
+     * @param code    User-value, should be unique per Binder
+     * @param clazz   Class of the IPC interface, or null to attempt to determine
      */
     @SuppressWarnings("unchecked")
     public RootIPCReceiver(Context context, int code, Class<T> clazz) {
@@ -214,8 +212,8 @@ public abstract class RootIPCReceiver<T> {
             // Not inside the Reflection class because this is a well known Java trick that
             // doesn't depend on Android-specific classes.
             Type superClass = getClass().getGenericSuperclass();
-            Type tType = ((ParameterizedType)superClass).getActualTypeArguments()[0];
-            this.clazz = (Class<T>)tType;
+            Type tType = ((ParameterizedType) superClass).getActualTypeArguments()[0];
+            this.clazz = (Class<T>) tType;
         } else {
             this.clazz = clazz;
         }
@@ -242,7 +240,7 @@ public abstract class RootIPCReceiver<T> {
         if (context != null) {
             if (context instanceof ContextWrapper) {
                 // prevent NPE if constructed in activity class definition
-                if (((ContextWrapper)context).getBaseContext() == null) return;
+                if (((ContextWrapper) context).getBaseContext() == null) return;
             }
             this.context = new WeakReference<Context>(context);
             context.registerReceiver(receiver, filter, null, handler);

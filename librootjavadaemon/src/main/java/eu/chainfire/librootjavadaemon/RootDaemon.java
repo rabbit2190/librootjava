@@ -43,7 +43,9 @@ import eu.chainfire.librootjava.RootJava;
 @SuppressWarnings({"unused", "WeakerAccess", "Convert2Diamond"})
 public class RootDaemon {
 
-    /** Used for logging */
+    /**
+     * Used for logging
+     */
     private static String LOG_PREFIX = "daemon";
 
     // ------------------------ calls for non-root ------------------------
@@ -57,7 +59,7 @@ public class RootDaemon {
      * NOTE: This is not compatible with using extractNativeLibs="false" in your manifest!
      *
      * @param context Application or activity context
-     * @param script Script from RootJava.getLaunchScript()
+     * @param script  Script from RootJava.getLaunchScript()
      * @return Patched script
      */
     public static List<String> patchLaunchScript(Context context, List<String> script) {
@@ -88,7 +90,8 @@ public class RootDaemon {
 
                     ret.add(String.format(Locale.ENGLISH, "%s cp %s %s >/dev/null 2>/dev/null", AppProcess.BOX, libSource, libExec));
                     ret.add(String.format(Locale.ENGLISH, "%s chmod %s %s >/dev/null 2>/dev/null", AppProcess.BOX, onData ? "0766" : "0700", libExec));
-                    if (onData) ret.add(String.format(Locale.ENGLISH, "restorecon %s >/dev/null 2>/dev/null", libExec));
+                    if (onData)
+                        ret.add(String.format(Locale.ENGLISH, "restorecon %s >/dev/null 2>/dev/null", libExec));
                 }
 
                 // inject executable into command
@@ -114,20 +117,22 @@ public class RootDaemon {
      * <br>
      * NOTE: This is not compatible with using extractNativeLibs="false" in your manifest!
      *
-     * @param context Application or activity context
-     * @param clazz Class containing "main" method
-     * @param app_process Specific app_process binary to use, or null for default
+     * @param context       Application or activity context
+     * @param clazz         Class containing "main" method
+     * @param app_process   Specific app_process binary to use, or null for default
      * @param relocate_path Path to relocate app_process to (must exist), or null for default
-     * @param params Parameters to supply to Java code, or null
-     * @param niceName Process name to use (ps) instead of app_process (should be unique to your app), or null
+     * @param params        Parameters to supply to Java code, or null
+     * @param niceName      Process name to use (ps) instead of app_process (should be unique to your app), or null
      * @return Script
      */
     public static List<String> getLaunchScript(Context context, Class<?> clazz, String app_process, String relocate_path, String[] params, String niceName) {
         return patchLaunchScript(context, RootJava.getLaunchScript(context, clazz, app_process, relocate_path, params, niceName));
     }
 
-    /** Prefixes of filename to remove from the app's cache directory */
-    public static final String[] CLEANUP_CACHE_PREFIXES = new String[] { ".daemonize_" };
+    /**
+     * Prefixes of filename to remove from the app's cache directory
+     */
+    public static final String[] CLEANUP_CACHE_PREFIXES = new String[]{".daemonize_"};
 
     /**
      * Clean up leftover files from our cache directory.<br>
@@ -145,15 +150,21 @@ public class RootDaemon {
 
     // ------------------------ calls for root ------------------------
 
-    /** Registered interfaces */
+    /**
+     * Registered interfaces
+     */
     private static final List<RootIPC> ipcs = new ArrayList<RootIPC>();
 
-    /** Called before termination */
+    /**
+     * Called before termination
+     */
     public interface OnExitListener {
         void onExit();
     }
 
-    /** Stored by daemonize(), called by exit() */
+    /**
+     * Stored by daemonize(), called by exit()
+     */
     private static volatile OnExitListener onExitListener = null;
 
     /**
@@ -177,10 +188,10 @@ public class RootDaemon {
      * are closed, we are running as a child of pid 1 (init), and no longer tied to the lifecycle of
      * the process that started us.
      *
-     * @param packageName Package name of the app. BuildConfig.APPLICATION_ID can generally be used.
-     * @param code User-value, should be unique per daemon process
+     * @param packageName             Package name of the app. BuildConfig.APPLICATION_ID can generally be used.
+     * @param code                    User-value, should be unique per daemon process
      * @param surviveFrameworkRestart If false (recommended), automatically terminate if the Android framework restarts
-     * @param exitListener Callback called before the daemon exists either due to a newer daemon version being started or {@link #exit()} being called, or null
+     * @param exitListener            Callback called before the daemon exists either due to a newer daemon version being started or {@link #exit()} being called, or null
      */
     @SuppressLint("PrivateApi")
     public static void daemonize(String packageName, int code, boolean surviveFrameworkRestart, OnExitListener exitListener) {
@@ -195,7 +206,7 @@ public class RootDaemon {
             Method mGetService = cServiceManager.getDeclaredMethod("getService", String.class);
             Method mAddService = cServiceManager.getDeclaredMethod("addService", String.class, IBinder.class);
 
-            IBinder svc = (IBinder)mGetService.invoke(null, id);
+            IBinder svc = (IBinder) mGetService.invoke(null, id);
             if (svc != null) {
                 IRootDaemonIPC ipc = IRootDaemonIPC.Stub.asInterface(svc);
                 if (!ipc.getVersion().equals(version)) {
@@ -226,7 +237,7 @@ public class RootDaemon {
                    your own code may still cause this process to terminate when the framework
                    dies, we're just not doing it automatically. */
 
-                IBinder activityService = (IBinder)mGetService.invoke(null, Context.ACTIVITY_SERVICE);
+                IBinder activityService = (IBinder) mGetService.invoke(null, Context.ACTIVITY_SERVICE);
                 if (activityService != null) {
                     try {
                         activityService.linkToDeath(new IBinder.DeathRecipient() {
@@ -275,8 +286,8 @@ public class RootDaemon {
      * Use this method instead of librootjava's 'new RootIPC()' constructor when running as daemon.
      *
      * @param packageName Package name of the app. Use the same value as used when calling {@link #daemonize(String, int, boolean, OnExitListener)}.
-     * @param ipc Binder object to wrap and send out
-     * @param code User-value, should be unique per Binder
+     * @param ipc         Binder object to wrap and send out
+     * @param code        User-value, should be unique per Binder
      * @return RootIPC instance
      */
     public static RootIPC register(String packageName, IBinder ipc, int code) {
@@ -292,7 +303,9 @@ public class RootDaemon {
         }
     }
 
-    /** Used to suspend the thread on which {@link #run()} is called */
+    /**
+     * Used to suspend the thread on which {@link #run()} is called
+     */
     private static final Object runWaiter = new Object();
 
     /**

@@ -70,7 +70,6 @@ public class Debugger {
      * check.
      *
      * @param name Name to present to debugger, or null to use process name
-     *
      * @see #waitFor(boolean)
      */
     public static void setName(String name) {

@@ -39,7 +39,7 @@ public class RootMain {
      */
     public static List<String> getLaunchScript(Context context) {
         // We pass the daemon our PID so we know which process started it
-        String[] params = new String[] {
+        String[] params = new String[]{
                 String.valueOf(android.os.Process.myPid())
         };
 

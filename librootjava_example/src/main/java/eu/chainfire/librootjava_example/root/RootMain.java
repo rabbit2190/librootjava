@@ -49,8 +49,8 @@ public class RootMain {
      * Call this from non-root code to generate the script to launch the root code
      *
      * @param context Application or activity context
-     * @param params Parameters to pass
-     * @param libs Native libraries to pass (no extension), for example libmynativecode
+     * @param params  Parameters to pass
+     * @param libs    Native libraries to pass (no extension), for example libmynativecode
      * @return Script
      */
     public static List<String> getLaunchScript(Context context, String[] params, String[] libs) {

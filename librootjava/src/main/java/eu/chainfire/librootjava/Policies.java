@@ -26,7 +26,7 @@ public class Policies {
      * SELinux policies that require patching for the Binder calls to work on newer Android
      * versions. Failing to do this may cause Binder transactions to fail.
      */
-    private static String[] required = new String[] {
+    private static String[] required = new String[]{
             /* We skip the init context used in older SuperSU versions, as that is potentially
                dangerous, and Android versions that actually require this policy modification
                are likely to run a SuperSU version that uses it's own SELinux context or Magisk */

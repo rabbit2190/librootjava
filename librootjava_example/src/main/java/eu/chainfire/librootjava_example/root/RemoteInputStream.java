@@ -26,14 +26,14 @@ import eu.chainfire.librootjava.Logger;
 
 /**
  * Example helper class to pass InputStreams through Binder
- *
+ * <p>
  * InputStream is a pretty basic class that is easily wrapped, because it really only requires
  * a handful of base methods.
- *
+ * <p>
  * We cannot make an InputStream into a Binder-passable interface directly, because its definitions
  * includes throwing IOExceptions. It also defines multiple methods with the same name and a
  * different parameter list, which is not supported in aidl.
- *
+ * <p>
  * You should never throw an exception in your Binder interface. We catch the exceptions and
  * return -2 instead, because conveniently all the methods we override should return values >= -1.
  * More complex classes would require more complex solutions.
@@ -42,7 +42,7 @@ import eu.chainfire.librootjava.Logger;
 public class RemoteInputStream {
     /**
      * Wraps an InputStream in an IRemoteInputStream
-     *
+     * <p>
      * Use this on the root side
      *
      * @param is InputStream
@@ -95,15 +95,15 @@ public class RemoteInputStream {
 
     /**
      * Wraps an IRemoteInputStream in an InputStream
-     *
+     * <p>
      * We throw an IOException if we receive a -2 result, because we know we caught one on the
      * other end in that case. The logcat output will obviously not show the real reason for the
      * exception.
-     *
+     * <p>
      * We also wrap the InputStream we create inside a BufferedInputStream, to potentially reduce
      * the number of calls made. We increase the buffer size to 64kb in case this is ever used
      * to actually read large files, which is quite a bit faster than the default 8kb.
-     *
+     * <p>
      * Use this on the non-root side.
      *
      * @param ris IRemoteInputStream received through Binder

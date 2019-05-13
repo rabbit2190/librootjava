@@ -134,12 +134,11 @@ public class AppProcess {
      * Note that app_process_original and app_process_init are checked to cope with root on
      * older Android versions and Xposed installations.
      *
-     * @see #getAppProcess()
-     *
      * @return Path to app_process binary with unspecified bits or null
+     * @see #getAppProcess()
      */
     public static String getAppProcessNoBit() {
-        for (String candidate : new String[] {
+        for (String candidate : new String[]{
                 "/system/bin/app_process_original",
                 "/system/bin/app_process_init",
                 "/system/bin/app_process"
@@ -154,10 +153,9 @@ public class AppProcess {
      * <br>
      * It is unlikely you will need to call this method.
      *
+     * @return Path to 32-bit app_process or app_process with unspecified bits or null
      * @see #getAppProcess()
      * @see #getAppProcess32Bit(boolean)
-     *
-     * @return Path to 32-bit app_process or app_process with unspecified bits or null
      */
     public static String getAppProcess32Bit() {
         return getAppProcess32Bit(true);
@@ -168,15 +166,14 @@ public class AppProcess {
      * <br>
      * It is unlikely you will need to call this method.
      *
-     * @see #getAppProcess()
-     *
      * @param orDefault Whether to return the app_process with unspecified bits if a specific 32-bit binary isn't found
      * @return Path to 32-bit app_process or optionally app_process with unspecified bits or null
+     * @see #getAppProcess()
      */
     public static String getAppProcess32Bit(boolean orDefault) {
         // app_process32 or null if not 32-bit
         // if >32bit, app_process32 will always exist, if ==32bit, default is 32bit
-        for (String candidate : new String[] {
+        for (String candidate : new String[]{
                 "/system/bin/app_process32_original",
                 "/system/bin/app_process32_init",
                 "/system/bin/app_process32"
@@ -192,13 +189,12 @@ public class AppProcess {
      * <br>
      * It is unlikely you will need to call this method.
      *
-     * @see #getAppProcess()
-     *
      * @return Path to 64-bit app_process or null
+     * @see #getAppProcess()
      */
     public static String getAppProcess64Bit() {
         // app_process64 or null if not 64-bit
-        for (String candidate : new String[] {
+        for (String candidate : new String[]{
                 "/system/bin/app_process64_original",
                 "/system/bin/app_process64_init",
                 "/system/bin/app_process64"
@@ -213,9 +209,8 @@ public class AppProcess {
      * <br>
      * It is unlikely you will need to call this method.
      *
-     * @see #getAppProcess()
-     *
      * @return Path to most-bits app_process or null
+     * @see #getAppProcess()
      */
     public static String getAppProcessMaxBit() {
         String ret = getAppProcess64Bit();
@@ -291,18 +286,17 @@ public class AppProcess {
      * "<i>Error finding namespace of apex: no namespace called runtime</i>". However, at least
      * on the first preview release of Q, running straight from /system/bin works and does
      * <i>not</i> give us a restricted SELinux context, so we skip relocation.
-     *
+     * <p>
      * TODO: Revisit on new Q preview and production releases. Maybe spend some time figuring out what causes the namespace error and if we can fix it.
      *
-     * @see #getAppProcessRelocate(Context, String, List, List, String)
-     *
      * @return should app_process be relocated ?
+     * @see #getAppProcessRelocate(Context, String, List, List, String)
      */
     @TargetApi(Build.VERSION_CODES.M)
     public static boolean shouldAppProcessBeRelocated() {
         return !(
-            (Build.VERSION.SDK_INT >= 29) ||
-            ((Build.VERSION.SDK_INT == 28) && (Build.VERSION.PREVIEW_SDK_INT != 0))
+                (Build.VERSION.SDK_INT >= 29) ||
+                        ((Build.VERSION.SDK_INT == 28) && (Build.VERSION.PREVIEW_SDK_INT != 0))
         );
     }
 
@@ -312,15 +306,14 @@ public class AppProcess {
      * On many Android versions and roots, executing app_process directly will force an
      * SELinux context that we do not want. Relocating it bypasses that.<br>
      *
+     * @param context        Application or activity context
+     * @param appProcessBase Path to original app_process or null for default
+     * @param preLaunch      List that retrieves commands to execute to perform the relocation
+     * @param postExecution  List that retrieves commands to execute to clean-up after execution
+     * @param path           Path to relocate to - must exist prior to script execution - or null for default
+     * @return Path to relocated app_process
      * @see #getAppProcess()
      * @see #shouldAppProcessBeRelocated()
-     *
-     * @param context Application or activity context
-     * @param appProcessBase Path to original app_process or null for default
-     * @param preLaunch List that retrieves commands to execute to perform the relocation
-     * @param postExecution List that retrieves commands to execute to clean-up after execution
-     * @param path Path to relocate to - must exist prior to script execution - or null for default
-     * @return Path to relocated app_process
      */
     public static String getAppProcessRelocate(Context context, String appProcessBase, List<String> preLaunch, List<String> postExecution, String path) {
         if (appProcessBase == null) appProcessBase = getAppProcess();
@@ -358,7 +351,8 @@ public class AppProcess {
         }
         preLaunch.add(String.format(Locale.ENGLISH, "%s cp %s %s >/dev/null 2>/dev/null", BOX, appProcessBase, appProcessCopy));
         preLaunch.add(String.format(Locale.ENGLISH, "%s chmod %s %s >/dev/null 2>/dev/null", BOX, onData ? "0766" : "0700", appProcessCopy));
-        if (onData) preLaunch.add(String.format(Locale.ENGLISH, "restorecon %s >/dev/null 2>/dev/null", appProcessCopy));
+        if (onData)
+            preLaunch.add(String.format(Locale.ENGLISH, "restorecon %s >/dev/null 2>/dev/null", appProcessCopy));
         postExecution.add(String.format(Locale.ENGLISH, "%s rm %s >/dev/null 2>/dev/null", BOX, appProcessCopy));
         return appProcessCopy;
     }

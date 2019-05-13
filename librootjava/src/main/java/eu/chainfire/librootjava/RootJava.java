@@ -72,7 +72,7 @@ public class RootJava {
      * String libpath = RootJava.getLibraryPath(context, "mynativecode");
      * }
      * </pre>
-     *
+     * <p>
      * NOTE: This is not compatible with using extractNativeLibs="false" in your manifest!
      *
      * @param context Application or activity context
@@ -97,7 +97,7 @@ public class RootJava {
 
         // try nativeLibraryDir
         ApplicationInfo appInfo = context.getApplicationInfo();
-        for (String candidate : new String[] {
+        for (String candidate : new String[]{
                 appInfo.nativeLibraryDir + File.separator + "lib" + libname + ".so",
                 appInfo.nativeLibraryDir + File.separator + libname + ".so" // unlikely but not impossible
         }) {
@@ -109,7 +109,7 @@ public class RootJava {
         // try BaseDexClassLoader
         if (context.getClassLoader() instanceof BaseDexClassLoader) {
             try {
-                BaseDexClassLoader bdcl = (BaseDexClassLoader)context.getClassLoader();
+                BaseDexClassLoader bdcl = (BaseDexClassLoader) context.getClassLoader();
                 return bdcl.findLibrary(libname);
             } catch (Throwable t) {
                 // not a standard call: catch Errors and Violations too aside from Exceptions
@@ -117,7 +117,7 @@ public class RootJava {
         }
 
         // try (old) default location
-        for (String candidate : new String[] {
+        for (String candidate : new String[]{
                 String.format(Locale.ENGLISH, "/data/data/%s/lib/lib%s.so", packageName, libname),
                 String.format(Locale.ENGLISH, "/data/data/%s/lib/%s.so", packageName, libname)
         }) {
@@ -131,14 +131,14 @@ public class RootJava {
 
     /**
      * Get string to be executed (in a root shell) to launch the Java code as root.
-     *
+     * <p>
      * You would normally use {@link #getLaunchScript(Context, Class, String, String, String[], String)}
      *
-     * @param context Application or activity context
-     * @param clazz Class containing "main" method
+     * @param context     Application or activity context
+     * @param clazz       Class containing "main" method
      * @param app_process Specific app_process binary to use, or null for default
-     * @param params Parameters to supply to Java code, or null
-     * @param niceName Process name to use (ps) instead of app_process (should be unique to your app), or null
+     * @param params      Parameters to supply to Java code, or null
+     * @param niceName    Process name to use (ps) instead of app_process (should be unique to your app), or null
      * @return Script
      */
     public static String getLaunchString(Context context, Class<?> clazz, String app_process, String[] params, String niceName) {
@@ -148,15 +148,15 @@ public class RootJava {
 
     /**
      * Get string to be executed (in a root shell) to launch the Java code as root.
-     *
+     * <p>
      * You would normally use {@link #getLaunchScript(Context, Class, String, String, String[], String)}
      *
      * @param packageCodePath Path to APK
-     * @param clazz Class containing "main" method
-     * @param app_process Specific app_process binary to use
-     * @param is64Bit Is specific app_process binary 64-bit?
-     * @param params Parameters to supply to Java code, or null
-     * @param niceName Process name to use (ps) instead of app_process (should be unique to your app), or null
+     * @param clazz           Class containing "main" method
+     * @param app_process     Specific app_process binary to use
+     * @param is64Bit         Is specific app_process binary 64-bit?
+     * @param params          Parameters to supply to Java code, or null
+     * @param niceName        Process name to use (ps) instead of app_process (should be unique to your app), or null
      * @return Script
      */
     public static String getLaunchString(String packageCodePath, String clazz, String app_process, boolean is64Bit, String[] params, String niceName) {
@@ -171,7 +171,7 @@ public class RootJava {
         int p;
         String[] extraPaths = null;
         if ((p = app_process.lastIndexOf('/')) >= 0) {
-            extraPaths = new String[] { app_process.substring(0, p) };
+            extraPaths = new String[]{app_process.substring(0, p)};
         }
         String LD_LIBRARY_PATH = Linker.getPatchedLdLibraryPath(is64Bit, extraPaths);
         if (LD_LIBRARY_PATH != null) {
@@ -221,12 +221,12 @@ public class RootJava {
      * you may consider passing true to {@link Policies#setPatched(Boolean)} and prevent the
      * patching altogether.
      *
-     * @param context Application or activity context
-     * @param clazz Class containing "main" method
-     * @param app_process Specific app_process binary to use, or null for default
+     * @param context       Application or activity context
+     * @param clazz         Class containing "main" method
+     * @param app_process   Specific app_process binary to use, or null for default
      * @param relocate_path Path to relocate app_process to (must exist), or null for default
-     * @param params Parameters to supply to Java code, or null
-     * @param niceName Process name to use (ps) instead of app_process (should be unique to your app), or null
+     * @param params        Parameters to supply to Java code, or null
+     * @param niceName      Process name to use (ps) instead of app_process (should be unique to your app), or null
      * @return Script
      */
     public static List<String> getLaunchScript(Context context, Class<?> clazz, String app_process, String relocate_path, String[] params, String niceName) {
@@ -249,8 +249,10 @@ public class RootJava {
         return script;
     }
 
-    /** Prefixes of filename to remove from the app's cache directory */
-    public static final String[] CLEANUP_CACHE_PREFIXES = new String[] { ".app_process32_", ".app_process64_" };
+    /**
+     * Prefixes of filename to remove from the app's cache directory
+     */
+    public static final String[] CLEANUP_CACHE_PREFIXES = new String[]{".app_process32_", ".app_process64_"};
 
     /**
      * Clean up leftover files from our cache directory.<br>
@@ -276,7 +278,7 @@ public class RootJava {
      * <br>
      * This version is for internal use, see {@link #cleanupCache(Context)} instead.
      *
-     * @param context Context to retrieve cache directory from
+     * @param context  Context to retrieve cache directory from
      * @param prefixes List of prefixes to scrub
      */
     public static void cleanupCache(Context context, final String[] prefixes) {
@@ -351,11 +353,10 @@ public class RootJava {
      * limited in many of the same ways the context returned by {@link #getSystemContext()} is, as
      * we still do not have an active ProcessRecord.
      *
-     * @see #getSystemContext()
-     *
      * @param packageName Name of the package to create Context for. Use BuildConfig.APPLICATION_ID (double check you're importing the correct BuildConfig!) to access our own package.
      * @return Package context
      * @throws PackageManager.NameNotFoundException If package could not be found
+     * @see #getSystemContext()
      */
     public static Context getPackageContext(String packageName) throws PackageManager.NameNotFoundException {
         return getSystemContext().createPackageContext(packageName, 0);

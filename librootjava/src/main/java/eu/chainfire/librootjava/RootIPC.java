@@ -73,11 +73,11 @@ public class RootIPC {
     /**
      * Wrap the supplied Binder, send it to the target package, and optionally wait until a session is connected and completed
      *
-     * @param packageName Package name of process to send Binder to. Use BuildConfig.APPLICATION_ID (double check you're importing the correct BuildConfig!) for convenience
-     * @param ipc Binder object to wrap and send out
-     * @param code User-value, should be unique per Binder
+     * @param packageName           Package name of process to send Binder to. Use BuildConfig.APPLICATION_ID (double check you're importing the correct BuildConfig!) for convenience
+     * @param ipc                   Binder object to wrap and send out
+     * @param code                  User-value, should be unique per Binder
      * @param connection_timeout_ms How long to wait for the other process to initiate the connection, -1 for default, 0 to wait forever (if blocking)
-     * @param blocking If a connection is made, do not return until the other process disconnects or dies,
+     * @param blocking              If a connection is made, do not return until the other process disconnects or dies,
      * @throws TimeoutException If the connection times out
      */
     public RootIPC(String packageName, IBinder ipc, int code, int connection_timeout_ms, boolean blocking) throws TimeoutException {
@@ -140,9 +140,9 @@ public class RootIPC {
 
     /**
      * Wrap the binder in an intent and broadcast it to packageName
-     *
+     * <p>
      * Uses the reflected sendBroadcast method that doesn't require us to have a context
-     *
+     * <p>
      * You may call this manually to re-broadcast the interface
      */
     public void broadcastIPC() {
@@ -203,6 +203,7 @@ public class RootIPC {
 
     /**
      * Get Connection based on IBinder
+     *
      * @param binder IBinder to find Connection for
      * @return Connection or null
      */
@@ -220,6 +221,7 @@ public class RootIPC {
 
     /**
      * Get Connection based on DeathRecipient
+     *
      * @param deathRecipient DeathRecipient to find Connection for
      * @return Connection or null
      */
